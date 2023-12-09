@@ -1,3 +1,4 @@
+const { response } = require('express')
 const User= require('../models/user')
 
 module.exports.profile=function(req,res){
@@ -5,12 +6,19 @@ module.exports.profile=function(req,res){
 }
 
 module.exports.signUp=function(req,res){
+    if(req.isAuthenticated()){
+        return res.redirect('profile')
+    }
+
     return res.render('user_sign_up',{
         title:'Codeial | Sign Up'
     })
 }
 
 module.exports.signIn=function(req,res){
+    if(req.isAuthenticated()){
+        return res.redirect('profile')
+    }
     return res.render('user_sign_in',{
         title:'Codeial | Sign In'
     })
@@ -43,6 +51,16 @@ module.exports.create = async function (req, res) {
 
 module.exports.createSession=function(req,res){
 
-    
+    return res.redirect('/')
     
 }
+
+module.exports.destroySession = function (req, res) {
+    req.logout(function(err){
+        if(err){
+            console.log('Error in logging out:', err);
+            return;
+        }
+        return res.redirect('/');
+    });
+};
