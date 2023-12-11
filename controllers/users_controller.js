@@ -16,11 +16,13 @@ module.exports.signUp=function(req,res){
 }
 
 module.exports.signIn=function(req,res){
+    
     if(req.isAuthenticated()){
         return res.redirect('profile')
     }
+
     return res.render('user_sign_in',{
-        title:'Codeial | Sign In'
+        title:'Codeial | Sign IN'
     })
 }
 
