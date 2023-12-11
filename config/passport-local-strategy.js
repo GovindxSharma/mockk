@@ -5,7 +5,7 @@ const LocalStrategy = require('passport-local').Strategy;
 // Passport Local Strategy Configuration
 passport.use(new LocalStrategy({
     usernameField: 'email'
-}, async function(email, password, done) {
+}, async function (email, password, done) {
     try {
         const user = await User.findOne({ email: email });
 
@@ -42,9 +42,9 @@ passport.deserializeUser(async function (id, done) {
 });
 
 // check if user is authenticated
-passport.checkAuthentication=function(req,res,next){
+passport.checkAuthentication = function (req, res, next) {
     //if yes than pass on to next function
-    if(req.isAuthenticated()){
+    if (req.isAuthenticated()) {
         return next();
     }
     //if not than redirect to sign-in
