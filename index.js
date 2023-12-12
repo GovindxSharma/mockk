@@ -26,6 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.static("./assets"));
+app.use('/uploads', express.static(__dirname + '/uploads'));
+
 app.use("/css", express.static("assets/css", { type: "text/css" }));
 app.use("/js", express.static("assets/js", { type: "text/javascript" }));
 

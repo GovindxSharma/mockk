@@ -1,5 +1,6 @@
-const { response } = require("express");
 const User = require("../models/user");
+const fs =require('fs')
+const path=require('path')
 
 module.exports.profile = async function (req, res) {
   try {
@@ -18,25 +19,34 @@ module.exports.profile = async function (req, res) {
 };
 
 module.exports.update = async function (req, res) {
+
+  if (req.user.id === req.params.id) {
   try {
-      // Check if the logged-in user is the owner of the profile
-      if (req.user.id === req.params.id) {
-          const user = await User.findByIdAndUpdate(req.params.id, req.body).exec();
-
-          if (!user) {
-              console.error('User not found');
-              return res.status(404).send('User not found');
-          }
-
-          return res.redirect('back');
-      } else {
-          console.log('Unauthorized update attempt.');
-          return res.status(401).send('Unauthorized');
+     let user = await User.findById(req.params.id);
+     User.uploadedAvatar(req,res,function(err){
+      if(err){console.log('******** Multer Error',err)}
+      user.name=req.body.name;
+      user.email=req.body.email;
+      if(req.file){
+        if(user.avatar){
+          fs.unlinkSync(path.join(__dirname,'..',user.avatar))
+        }
+        user.avatar=User.avatarPath+ '/'+ req.file.filename
       }
+      user.save();
+      return res.redirect('back')
+     
+     })
+         
+     
   } catch (err) {
-      console.error('Error updating user:', err);
-      return res.status(500).send('Internal Server Error');
-  }
+      req.flash('error',err);
+      return res.redirect('back')
+  } 
+} else {
+    req.flash('error','Unauthorized')
+    return res.status(401).send('Unauthorized');
+}
 };
 
 

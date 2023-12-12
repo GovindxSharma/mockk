@@ -1,1 +1,1 @@
-console.log('Working fine')
+// console.log(user.avatar)
